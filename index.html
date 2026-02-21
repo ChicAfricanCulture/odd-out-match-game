@@ -7,17 +7,11 @@
 
   <style>
     :root{
-      --bg1:#1a2a3a;
-      --bg2:#0d1b2a;
-      --accent:#f9a826;
-      --muted:#b8c7d6;
-      --text:#e0e0e0;
+      --bg1:#1a2a3a; --bg2:#0d1b2a;
+      --accent:#f9a826; --muted:#b8c7d6; --text:#e0e0e0;
       --panel: rgba(26,42,58,0.82);
-      --tileA:#e8d0b0;
-      --tileB:#b08968;
-      --tileBorder:#c49a6c;
+      --tileA:#e8d0b0; --tileB:#b08968; --tileBorder:#c49a6c;
     }
-
     *{ box-sizing:border-box; }
     body{
       background: linear-gradient(135deg, var(--bg1), var(--bg2));
@@ -29,7 +23,6 @@
       flex-direction:column;
       align-items:center;
     }
-
     .container{ width:100%; max-width: 960px; text-align:center; }
 
     h1{ color: var(--accent); font-size: 2rem; margin: 10px 0 6px; }
@@ -43,22 +36,11 @@
       flex-wrap:wrap;
       margin: 10px 0 12px;
     }
-
     .stats{
-      display:flex;
-      gap:16px;
-      justify-content:center;
-      flex-wrap:wrap;
-      color: var(--accent);
-      font-size: 1.05rem;
+      display:flex; gap:16px; justify-content:center; flex-wrap:wrap;
+      color: var(--accent); font-size: 1.05rem;
     }
-
-    .controls{
-      display:flex;
-      gap:10px;
-      justify-content:center;
-      flex-wrap:wrap;
-    }
+    .controls{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
 
     button{
       background: linear-gradient(135deg, var(--accent), #e8951e);
@@ -104,12 +86,6 @@
       transform-origin:left center;
       transform: scaleX(1);
     }
-    .hint{
-      color: var(--muted);
-      font-size: 0.9rem;
-      margin-top: 10px;
-      line-height: 1.35;
-    }
 
     .game-board{
       display:grid;
@@ -118,7 +94,6 @@
       max-width: 520px;
       margin: 0 auto 16px;
     }
-
     .tile{
       aspect-ratio: 1 / 1;
       background: linear-gradient(145deg, var(--tileA), var(--tileB));
@@ -134,38 +109,28 @@
       overflow:hidden;
       outline:none;
     }
-
     .tile:hover{ transform: scale(1.03); }
     .tile:focus-visible{
       border-color: var(--accent);
       box-shadow: 0 0 0 3px rgba(249,168,38,0.35), 0 5px 15px rgba(0,0,0,0.45);
     }
-
     .tile.flipped{ background:#ffffff; }
     .tile img{
-      width: 92%;
-      height: 92%;
+      width: 92%; height: 92%;
       object-fit: cover;
       border-radius: 10px;
       pointer-events:none;
       display:block;
     }
-
     .tile.selected{
       border-color: var(--accent);
       box-shadow: 0 0 18px rgba(249,168,38,0.70), 0 5px 15px rgba(0,0,0,0.45);
     }
-
-    .tile.wrong{
-      animation: shake 0.45s;
-      border-color:#ff4444;
-    }
-
+    .tile.wrong{ animation: shake 0.45s; border-color:#ff4444; }
     .tile.correct-reveal{
       border-color:#7CFF7C;
       box-shadow: 0 0 16px rgba(124,255,124,0.55), 0 5px 15px rgba(0,0,0,0.45);
     }
-
     @keyframes shake {
       0%,100%{ transform: translateX(0); }
       25%{ transform: translateX(-5px); }
@@ -194,7 +159,7 @@
 <body>
   <div class="container">
     <h1>African Foodways: Odd One Out</h1>
-    <p class="subtitle">Reveal all four. Then click the impostor—before the timer runs out.</p>
+    <p class="subtitle">Reveal all four. Then pick the impostor—before the timer ends.</p>
 
     <div class="top-row">
       <div class="stats" aria-label="Game statistics">
@@ -210,22 +175,18 @@
 
     <div class="timer-wrap" aria-label="Round timer">
       <div class="timer-label">
-        <span>Time left</span>
+        <span id="phase-label">Phase: Reveal</span>
         <span><span id="time-left">10</span>s</span>
       </div>
       <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="10" aria-valuenow="10">
         <div id="bar-fill"></div>
-      </div>
-      <div class="hint">
-        Images must live in <strong>/images/</strong> at the repo root.
-        Example URL: <code>/odd-out-match-game/images/fufu1.jpg</code>
       </div>
     </div>
 
     <div class="game-board" id="board" aria-label="Odd one out board"></div>
 
     <div class="feedback" id="feedback" aria-live="polite">
-      Click tiles to reveal images. After all four are revealed, pick the odd one out.
+      Click tiles to reveal images. After all four are revealed, the timer starts.
     </div>
 
     <button id="next-btn" style="display:none;">Next Round</button>
@@ -233,9 +194,9 @@
 
   <script>
     // ==================== CONFIG ====================
-    const ROUND_SECONDS = 10;
+    const CHOICE_SECONDS = 10;
 
-    // ==================== ROUNDS (STATIC) ====================
+    // ==================== ROUNDS ====================
     const rounds = [
       {
         name: "Fufu Variations",
@@ -243,7 +204,7 @@
         images: ['fufu1.jpg', 'fufu2.jpg', 'fufu3.jpg', 'mashed-potato.jpg'],
         explain: "Mashed potatoes are the odd one out. Fufu is pounded cassava/yam/plantain and eaten with soup; mashed potatoes are whipped and typically eaten with a fork."
       }
-      // Add round 2+ after you upload those images too.
+      // Add more rounds after you upload the matching images.
     ];
 
     // ==================== STATE ====================
@@ -252,10 +213,11 @@
     let revealed = new Set(); // indices
     let solved = false;
 
+    let phase = 'reveal'; // 'reveal' | 'choose'
     let timerId = null;
-    let timeLeft = ROUND_SECONDS;
+    let timeLeft = CHOICE_SECONDS;
 
-    // Tick sound (optional)
+    // Tick sound
     let tickOn = false;
     let audioCtx = null;
 
@@ -270,6 +232,7 @@
     const totalRoundsEl = document.getElementById('total-rounds');
     const scoreEl = document.getElementById('score');
 
+    const phaseLabel = document.getElementById('phase-label');
     const timeLeftEl = document.getElementById('time-left');
     const barFill = document.getElementById('bar-fill');
     const progressBar = document.querySelector('.bar');
@@ -278,10 +241,20 @@
 
     function setFeedback(html){ feedbackEl.innerHTML = html; }
 
-    // ==================== ASSET PATH ====================
-    // This resolves correctly on GitHub Pages regardless of subfolders.
+    // ==================== ASSETS ====================
     function imgUrl(fileName){
       return new URL(`images/${fileName}`, document.baseURI).href;
+    }
+
+    function makeMissingSvg(text){
+      const safe = String(text).replace(/[<>&"]/g, '');
+      const svg =
+        `<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200">
+          <rect width="100%" height="100%" fill="#f9a826"/>
+          <text x="50%" y="42%" text-anchor="middle" font-size="16" font-family="Arial" fill="#1a2a3a">Missing file</text>
+          <text x="50%" y="62%" text-anchor="middle" font-size="10" font-family="Arial" fill="#1a2a3a">${safe}</text>
+        </svg>`;
+      return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
     }
 
     // ==================== AUDIO ====================
@@ -312,7 +285,6 @@
 
       o.connect(g);
       g.connect(ctx.destination);
-
       o.start(now);
       o.stop(now + 0.06);
     }
@@ -331,22 +303,28 @@
       }
     });
 
-    // ==================== TIMER ====================
+    // ==================== TIMER (CHOICE PHASE ONLY) ====================
     function stopTimer(){
       if(timerId) clearInterval(timerId);
       timerId = null;
     }
 
     function updateTimerUI(){
-      timeLeftEl.textContent = String(timeLeft);
-      const ratio = Math.max(0, Math.min(1, timeLeft / ROUND_SECONDS));
+      phaseLabel.textContent = phase === 'reveal' ? 'Phase: Reveal' : 'Phase: Choose';
+      timeLeftEl.textContent = phase === 'choose' ? String(timeLeft) : String(CHOICE_SECONDS);
+
+      const ratio = phase === 'choose'
+        ? Math.max(0, Math.min(1, timeLeft / CHOICE_SECONDS))
+        : 1;
+
       barFill.style.transform = `scaleX(${ratio})`;
-      progressBar.setAttribute('aria-valuenow', String(timeLeft));
+      progressBar.setAttribute('aria-valuenow', phase === 'choose' ? String(timeLeft) : String(CHOICE_SECONDS));
     }
 
-    function startTimer(){
+    function startChoiceTimer(){
       stopTimer();
-      timeLeft = ROUND_SECONDS;
+      phase = 'choose';
+      timeLeft = CHOICE_SECONDS;
       updateTimerUI();
 
       timerId = setInterval(() => {
@@ -364,18 +342,18 @@
 
     function onTimeUp(){
       const round = rounds[currentRound];
-      revealAllTiles();
       highlightCorrect(round.odd);
       solved = true;
       setFeedback(`<strong>Time’s up!</strong> The odd one out was highlighted.<br/>${round.explain}`);
       nextBtn.style.display = 'inline';
     }
 
-    // ==================== ROUND SETUP ====================
+    // ==================== ROUND ====================
     function initRound(){
       stopTimer();
       revealed.clear();
       solved = false;
+      phase = 'reveal';
       boardEl.innerHTML = '';
       nextBtn.style.display = 'none';
 
@@ -383,6 +361,7 @@
       roundEl.textContent = String(currentRound + 1);
 
       setFeedback(`Round ${currentRound + 1}: <strong>${round.name}</strong><br/>Reveal all four tiles.`);
+      updateTimerUI();
 
       for(let i=0;i<4;i++){
         const tile = document.createElement('div');
@@ -394,19 +373,6 @@
         tile.textContent = '?';
         boardEl.appendChild(tile);
       }
-
-      startTimer();
-    }
-
-    function makeMissingSvg(text){
-      const safe = String(text).replace(/[<>&"]/g, '');
-      const svg =
-        `<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200">
-          <rect width="100%" height="100%" fill="#f9a826"/>
-          <text x="50%" y="42%" text-anchor="middle" font-size="16" font-family="Arial" fill="#1a2a3a">Missing file</text>
-          <text x="50%" y="62%" text-anchor="middle" font-size="10" font-family="Arial" fill="#1a2a3a">${safe}</text>
-        </svg>`;
-      return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
     }
 
     function flipTile(tileEl, idx){
@@ -418,25 +384,17 @@
       tileEl.textContent = '';
 
       const img = document.createElement('img');
-      const url = imgUrl(fileName);
-
-      img.src = url;
+      img.src = imgUrl(fileName);
       img.alt = round.name;
       img.onerror = () => { img.src = makeMissingSvg(`images/${fileName}`); };
 
       tileEl.appendChild(img);
       tileEl.setAttribute('aria-label', `Tile ${idx + 1}, revealed`);
 
-      if(revealed.size === 4){
-        setFeedback(`Round ${currentRound + 1}: <strong>${round.name}</strong><br/>Now click the odd one out.`);
+      if(revealed.size === 4 && phase === 'reveal'){
+        setFeedback(`Round ${currentRound + 1}: <strong>${round.name}</strong><br/>Now click the odd one out (timer started).`);
+        startChoiceTimer();
       }
-    }
-
-    function revealAllTiles(){
-      boardEl.querySelectorAll('.tile').forEach(tileEl => {
-        const idx = Number(tileEl.dataset.index);
-        if(!revealed.has(idx)) flipTile(tileEl, idx);
-      });
     }
 
     function highlightCorrect(correctIdx){
@@ -473,6 +431,11 @@
 
       if(revealed.size < 4){
         setFeedback(`Keep going — reveal all four first.`);
+        return;
+      }
+
+      if(phase !== 'choose'){
+        // safety: should not happen, but prevents weird states
         return;
       }
 
