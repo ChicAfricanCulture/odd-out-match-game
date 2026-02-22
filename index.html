@@ -9,8 +9,8 @@
     :root{
       --bg1:#1a2a3a; --bg2:#0d1b2a;
       --accent:#f9a826; --muted:#b8c7d6; --text:#e0e0e0;
-      --panel: rgba(26,42,58,0.82);
-      --tileA:#e8d0b0; --tileB:#b08968; --tileBorder:#c49a6c;
+      --panel: rgba(26,42,58,0.86);
+      --tileBorder:#c49a6c;
     }
     *{ box-sizing:border-box; }
     body{
@@ -26,7 +26,20 @@
     .container{ width:100%; max-width: 960px; text-align:center; }
 
     h1{ color: var(--accent); font-size: 2rem; margin: 10px 0 6px; }
-    .subtitle{ color: var(--muted); margin: 0 0 14px; }
+    .subtitle{ color: var(--muted); margin: 0 0 10px; }
+
+    .instructions{
+      max-width: 720px;
+      margin: 0 auto 14px;
+      background: rgba(249,168,38,0.14);
+      border: 1px solid rgba(249,168,38,0.45);
+      border-radius: 12px;
+      padding: 12px 14px;
+      text-align:left;
+      line-height: 1.35;
+    }
+    .instructions strong{ color: var(--accent); }
+    .instructions .small{ color: var(--muted); font-size: 0.95rem; margin-top: 6px; }
 
     .top-row{
       display:flex;
@@ -96,7 +109,7 @@
     }
     .tile{
       aspect-ratio: 1 / 1;
-      background: linear-gradient(145deg, var(--tileA), var(--tileB));
+      background: #ffffff;
       border: 3px solid var(--tileBorder);
       border-radius: 12px;
       cursor: pointer;
@@ -104,24 +117,24 @@
       display:flex;
       align-items:center;
       justify-content:center;
-      font-size: 3.2rem;
       box-shadow: 0 5px 15px rgba(0,0,0,0.45);
       overflow:hidden;
       outline:none;
+      position: relative;
     }
-    .tile:hover{ transform: scale(1.03); }
+    .tile:hover{ transform: scale(1.02); }
     .tile:focus-visible{
       border-color: var(--accent);
       box-shadow: 0 0 0 3px rgba(249,168,38,0.35), 0 5px 15px rgba(0,0,0,0.45);
     }
-    .tile.flipped{ background:#ffffff; }
     .tile img{
-      width: 92%; height: 92%;
+      width: 100%;
+      height: 100%;
       object-fit: cover;
-      border-radius: 10px;
-      pointer-events:none;
       display:block;
+      pointer-events:none;
     }
+
     .tile.selected{
       border-color: var(--accent);
       box-shadow: 0 0 18px rgba(249,168,38,0.70), 0 5px 15px rgba(0,0,0,0.45);
@@ -149,9 +162,15 @@
       font-size: 1.02rem;
     }
 
+    .loading{
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin: 6px 0 0;
+      text-align:center;
+    }
+
     @media (max-width: 520px){
       .game-board{ grid-template-columns: repeat(2, minmax(120px, 1fr)); }
-      .tile{ font-size: 2.7rem; }
     }
   </style>
 </head>
@@ -159,7 +178,12 @@
 <body>
   <div class="container">
     <h1>African Foodways: Odd One Out</h1>
-    <p class="subtitle">Reveal all four. Then pick the impostor—before the timer ends.</p>
+    <p class="subtitle">Look closely. One image doesn’t belong.</p>
+
+    <div class="instructions" role="note" aria-label="How to play">
+      <strong>How to play:</strong> You have <strong>10 seconds</strong>. Click the image that does <strong>not</strong> belong.
+      <div class="small">Tip: compare texture, base ingredients, and how the dish is served.</div>
+    </div>
 
     <div class="top-row">
       <div class="stats" aria-label="Game statistics">
@@ -175,18 +199,19 @@
 
     <div class="timer-wrap" aria-label="Round timer">
       <div class="timer-label">
-        <span id="phase-label">Phase: Reveal</span>
+        <span>Time left</span>
         <span><span id="time-left">10</span>s</span>
       </div>
       <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="10" aria-valuenow="10">
         <div id="bar-fill"></div>
       </div>
+      <div class="loading" id="loading"></div>
     </div>
 
     <div class="game-board" id="board" aria-label="Odd one out board"></div>
 
     <div class="feedback" id="feedback" aria-live="polite">
-      Click tiles to reveal images. After all four are revealed, the timer starts.
+      Images are loading…
     </div>
 
     <button id="next-btn" style="display:none;">Next Round</button>
@@ -204,20 +229,18 @@
         images: ['fufu1.jpg', 'fufu2.jpg', 'fufu3.jpg', 'mashed-potato.jpg'],
         explain: "Mashed potatoes are the odd one out. Fufu is pounded cassava/yam/plantain and eaten with soup; mashed potatoes are whipped and typically eaten with a fork."
       }
-      // Add more rounds after you upload the matching images.
+      // Add more rounds after you upload those images.
     ];
 
     // ==================== STATE ====================
     let currentRound = 0;
     let score = 0;
-    let revealed = new Set(); // indices
     let solved = false;
 
-    let phase = 'reveal'; // 'reveal' | 'choose'
     let timerId = null;
     let timeLeft = CHOICE_SECONDS;
 
-    // Tick sound
+    // Tick sound (optional)
     let tickOn = false;
     let audioCtx = null;
 
@@ -232,10 +255,10 @@
     const totalRoundsEl = document.getElementById('total-rounds');
     const scoreEl = document.getElementById('score');
 
-    const phaseLabel = document.getElementById('phase-label');
     const timeLeftEl = document.getElementById('time-left');
     const barFill = document.getElementById('bar-fill');
     const progressBar = document.querySelector('.bar');
+    const loadingEl = document.getElementById('loading');
 
     totalRoundsEl.textContent = String(rounds.length);
 
@@ -249,10 +272,10 @@
     function makeMissingSvg(text){
       const safe = String(text).replace(/[<>&"]/g, '');
       const svg =
-        `<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200">
+        `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400">
           <rect width="100%" height="100%" fill="#f9a826"/>
-          <text x="50%" y="42%" text-anchor="middle" font-size="16" font-family="Arial" fill="#1a2a3a">Missing file</text>
-          <text x="50%" y="62%" text-anchor="middle" font-size="10" font-family="Arial" fill="#1a2a3a">${safe}</text>
+          <text x="50%" y="45%" text-anchor="middle" font-size="26" font-family="Arial" fill="#1a2a3a">Missing file</text>
+          <text x="50%" y="62%" text-anchor="middle" font-size="16" font-family="Arial" fill="#1a2a3a">${safe}</text>
         </svg>`;
       return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
     }
@@ -303,27 +326,21 @@
       }
     });
 
-    // ==================== TIMER (CHOICE PHASE ONLY) ====================
+    // ==================== TIMER ====================
     function stopTimer(){
       if(timerId) clearInterval(timerId);
       timerId = null;
     }
 
     function updateTimerUI(){
-      phaseLabel.textContent = phase === 'reveal' ? 'Phase: Reveal' : 'Phase: Choose';
-      timeLeftEl.textContent = phase === 'choose' ? String(timeLeft) : String(CHOICE_SECONDS);
-
-      const ratio = phase === 'choose'
-        ? Math.max(0, Math.min(1, timeLeft / CHOICE_SECONDS))
-        : 1;
-
+      timeLeftEl.textContent = String(timeLeft);
+      const ratio = Math.max(0, Math.min(1, timeLeft / CHOICE_SECONDS));
       barFill.style.transform = `scaleX(${ratio})`;
-      progressBar.setAttribute('aria-valuenow', phase === 'choose' ? String(timeLeft) : String(CHOICE_SECONDS));
+      progressBar.setAttribute('aria-valuenow', String(timeLeft));
     }
 
-    function startChoiceTimer(){
+    function startTimer(){
       stopTimer();
-      phase = 'choose';
       timeLeft = CHOICE_SECONDS;
       updateTimerUI();
 
@@ -349,61 +366,13 @@
     }
 
     // ==================== ROUND ====================
-    function initRound(){
-      stopTimer();
-      revealed.clear();
-      solved = false;
-      phase = 'reveal';
-      boardEl.innerHTML = '';
-      nextBtn.style.display = 'none';
-
-      const round = rounds[currentRound];
-      roundEl.textContent = String(currentRound + 1);
-
-      setFeedback(`Round ${currentRound + 1}: <strong>${round.name}</strong><br/>Reveal all four tiles.`);
-      updateTimerUI();
-
-      for(let i=0;i<4;i++){
-        const tile = document.createElement('div');
-        tile.className = 'tile';
-        tile.dataset.index = String(i);
-        tile.tabIndex = 0;
-        tile.setAttribute('role', 'button');
-        tile.setAttribute('aria-label', `Tile ${i + 1}, hidden`);
-        tile.textContent = '?';
-        boardEl.appendChild(tile);
-      }
-    }
-
-    function flipTile(tileEl, idx){
-      const round = rounds[currentRound];
-      const fileName = round.images[idx];
-
-      revealed.add(idx);
-      tileEl.classList.add('flipped');
-      tileEl.textContent = '';
-
-      const img = document.createElement('img');
-      img.src = imgUrl(fileName);
-      img.alt = round.name;
-      img.onerror = () => { img.src = makeMissingSvg(`images/${fileName}`); };
-
-      tileEl.appendChild(img);
-      tileEl.setAttribute('aria-label', `Tile ${idx + 1}, revealed`);
-
-      if(revealed.size === 4 && phase === 'reveal'){
-        setFeedback(`Round ${currentRound + 1}: <strong>${round.name}</strong><br/>Now click the odd one out (timer started).`);
-        startChoiceTimer();
-      }
+    function clearSelections(){
+      boardEl.querySelectorAll('.tile').forEach(t => t.classList.remove('selected','wrong'));
     }
 
     function highlightCorrect(correctIdx){
       const tile = boardEl.querySelector(`.tile[data-index="${correctIdx}"]`);
       if(tile) tile.classList.add('correct-reveal');
-    }
-
-    function clearSelections(){
-      boardEl.querySelectorAll('.tile').forEach(t => t.classList.remove('selected','wrong'));
     }
 
     function markSelection(tileEl, correct){
@@ -415,29 +384,64 @@
       }
     }
 
-    // ==================== INPUT ====================
+    function preloadRoundImages(round){
+      const urls = round.images.map(fn => imgUrl(fn));
+      return Promise.all(urls.map(url => new Promise(resolve => {
+        const i = new Image();
+        i.onload = () => resolve({ url, ok: true });
+        i.onerror = () => resolve({ url, ok: false });
+        i.src = url;
+      })));
+    }
+
+    async function initRound(){
+      stopTimer();
+      solved = false;
+      boardEl.innerHTML = '';
+      nextBtn.style.display = 'none';
+
+      const round = rounds[currentRound];
+      roundEl.textContent = String(currentRound + 1);
+
+      loadingEl.textContent = 'Loading images…';
+      setFeedback(`Round ${currentRound + 1}: <strong>${round.name}</strong><br/>You have ${CHOICE_SECONDS} seconds. Click the odd one out.`);
+
+      // preload so timer doesn't start until images are ready
+      const results = await preloadRoundImages(round);
+      const failed = results.filter(r => !r.ok).length;
+
+      loadingEl.textContent = failed ? `Some images failed to load (${failed}).` : '';
+
+      // render tiles (images visible immediately)
+      for(let i=0;i<4;i++){
+        const tile = document.createElement('div');
+        tile.className = 'tile';
+        tile.dataset.index = String(i);
+        tile.tabIndex = 0;
+        tile.setAttribute('role','button');
+        tile.setAttribute('aria-label', `Tile ${i + 1}`);
+
+        const img = document.createElement('img');
+        const fileName = round.images[i];
+        img.src = imgUrl(fileName);
+        img.alt = round.name;
+        img.onerror = () => { img.src = makeMissingSvg(`images/${fileName}`); };
+
+        tile.appendChild(img);
+        boardEl.appendChild(tile);
+      }
+
+      // start timer AFTER images are placed
+      startTimer();
+    }
+
     function handleTileClick(tileEl){
       if(!tileEl || solved) return;
 
-      if(tickOn) ensureAudio(); // unlock audio on user gesture
+      if(tickOn) ensureAudio();
 
       const idx = Number(tileEl.dataset.index);
       const round = rounds[currentRound];
-
-      if(!revealed.has(idx)){
-        flipTile(tileEl, idx);
-        return;
-      }
-
-      if(revealed.size < 4){
-        setFeedback(`Keep going — reveal all four first.`);
-        return;
-      }
-
-      if(phase !== 'choose'){
-        // safety: should not happen, but prevents weird states
-        return;
-      }
 
       const isCorrect = idx === round.odd;
       markSelection(tileEl, isCorrect);
@@ -467,7 +471,6 @@
       handleTileClick(tile);
     });
 
-    // ==================== NAV ====================
     function nextRound(){
       if(currentRound < rounds.length - 1){
         currentRound += 1;
@@ -490,7 +493,6 @@
     nextBtn.addEventListener('click', nextRound);
     restartBtn.addEventListener('click', restart);
 
-    // ==================== START ====================
     updateTickButton();
     initRound();
   </script>
