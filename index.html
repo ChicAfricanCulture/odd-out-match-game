@@ -178,7 +178,7 @@
 <body>
   <div class="container">
     <h1>African Foodways: Odd One Out</h1>
-    <p class="subtitle">Look closely. One image doesn’t belong.</p>
+    <p class="subtitle">Look closely. One image doesn't belong.</p>
 
     <div class="instructions" role="note" aria-label="How to play">
       <strong>How to play:</strong> You have <strong>10 seconds</strong>. Click the image that does <strong>not</strong> belong.
@@ -221,135 +221,137 @@
     // ==================== CONFIG ====================
     const CHOICE_SECONDS = 10;
 
-  // ==================== ROUNDS ====================
-const rounds = [
-  {
-    name: "Fufu Variations",
-    odd: 3,
-    images: ["fufu1.jpg", "fufu2.jpg", "fufu3.jpg", "mashed-potato.jpg"],
-    explain: "Mashed potatoes are the odd one out. Fufu is pounded cassava/yam/plantain and eaten with soup; mashed potatoes are whipped and typically eaten with a fork."
-  },
-  {
-    name: "Banana vs. Plantain",
-    odd: 3,
-    images: [
-      "r02_banana_1.jpg",
-      "r02_banana_2.jpg",
-      "r02_banana_3.jpg",
-      "r02_plantain_odd.jpg"
-    ],
-    explain: "Plantains are starchier and usually cooked; bananas are sweeter and often eaten raw."
-  },
-  {
-    name: "Jollof Rice vs. Fried Rice",
-    odd: 3,
-    images: [
-      "r03_Jollof_1.jpg",
-      "r03_Jollof_2.jpg",
-      "r03_Jollof_3.jpg",
-      "r03_Fried_odd.jpg"
-    ],
-    explain: "Jollof rice is cooked in a tomato-pepper base, giving it a uniform red-orange color and integrated flavor. Fried rice is stir-fried with visible separate grains, vegetables, and often egg."
-  },
-  {
-    name: "Yam vs. Sweet Potato",
-    odd: 3,
-    images: [
-      "r04_Yam_1.jpg",
-      "r04_Yam_2.jpg",
-      "r04_Yam_3.jpg",
-      "r04_sweet_potato_odd.jpg"
-    ],
-    explain: "True yams are starchier with rough brown skin and pale flesh. Sweet potatoes are sweeter, often orange inside, and softer when cooked."
-  },
-  {
-    name: "Ugali vs. Grits",
-    odd: 3,
-    images: [
-      "r05_ugali_1.jpg",
-      "r05_ugali_2.jpg",
-      "r05_ugali_3.jpg",
-      "r05_grits_odd.jpg"
-    ],
-    explain: "Ugali is firm, molded maize porridge meant to be shaped and dipped. Grits are softer, spoonable, and often served creamy."
-  },  {
-    name: "Agege Bread vs White Bread",
-    odd: 3,
-    images: [
-      "r06_agege_1.jpg",
-      "r06_agege_2.jpg",
-      "r06_agege_3.jpg",
-      "r06_white_bread_odd.jpg"
-    ],
-    explain: "Agege bread is soft, stretchy, and slightly sweet with a distinct yellow hue. Standard white sandwich bread is lighter, drier, and evenly sliced."
-  },
-  {
-    name: "Kisra vs Tortilla",
-    odd: 3,
-    images: [
-      "r07_kisra_1.jpg",
-      "r07_kisra_2.jpg",
-      "r07_kisra_3.jpg",
-      "r07_tortilla_odd.jpg"
-    ],
-    explain: "Kisra is a thin fermented sorghum flatbread with a porous texture. Tortillas are typically wheat or corn-based and not fermented in the same way."
-  },
-  {
-    name: "Banku vs Couscous",
-    odd: 3,
-    images: [
-      "r08_banku_1.jpg",
-      "r08_banku_2.jpg",
-      "r08_banku_3.jpg",
-      "r08_couscous_odd.jpg"
-    ],
-    explain: "Banku is a fermented corn and cassava dough formed into smooth balls. Couscous consists of tiny steamed semolina grains."
-  },
-  {
-    name: "Kenkey vs Tamales",
-    odd: 3,
-    images: [
-      "r09_kenkey_1.jpg",
-      "r09_kenkey_2.jpg",
-      "r09_kenkey_3.jpg",
-      "r09_tamale_odd.jpg"
-    ],
-    explain: "Kenkey is fermented maize dough wrapped in husks and boiled. Tamales are masa-based, often filled, and steamed in husks."
-  },
-  {
-    name: "Lablab vs Lima Beans",
-    odd: 3,
-    images: [
-      "r10_lablab_1.jpg",
-      "r10_lablab_2.jpg",
-      "r10_lablab_3.jpg",
-      "r10_lima_bean_odd.jpg"
-    ],
-    explain: "Lablab beans (hyacinth beans) are typically smaller and darker with varied shapes. Lima beans are flatter, lighter in color, and more uniform."
-  },
-  {
-    name: "Bambara Groundnut vs Peanut",
-    odd: 3,
-    images: [
-      "r11_bambara_1.jpg",
-      "r11_bambara_2.jpg",
-      "r11_bambara_3.jpg",
-      "r11_peanut_odd.jpg"
-    ],
-    explain: "Bambara groundnuts grow underground like peanuts but are rounder and thicker. Peanuts are elongated and typically found in two-lobed shells."
-  },
- {
-  name: "Cowpea Varieties (Dried)",
-  images: [
-    "dried_blackeye.jpg",
-    "dried_pinkeye.jpg",
-    "dried_cream.jpg",
-    "dried_crowder.jpg"
-  ],
-  oddOneLabel: "dried_crowder.jpg",
-  explain: "Crowder cowpeas are the odd one out — they grow so tightly packed in the pod that the seeds become squared-off or blocky. Blackeye, pinkeye and cream types remain more rounded or kidney-shaped even when dry."
-}
-];
+    // ==================== ROUNDS ====================
+    const rounds = [
+      {
+        name: "Fufu Variations",
+        odd: 3,
+        images: ["fufu1.jpg", "fufu2.jpg", "fufu3.jpg", "mashed-potato.jpg"],
+        explain: "Mashed potatoes are the odd one out. Fufu is pounded cassava/yam/plantain and eaten with soup; mashed potatoes are whipped and typically eaten with a fork."
+      },
+      {
+        name: "Banana vs. Plantain",
+        odd: 3,
+        images: [
+          "r02_banana_1.jpg",
+          "r02_banana_2.jpg",
+          "r02_banana_3.jpg",
+          "r02_plantain_odd.jpg"
+        ],
+        explain: "Plantains are starchier and usually cooked; bananas are sweeter and often eaten raw."
+      },
+      {
+        name: "Jollof Rice vs. Fried Rice",
+        odd: 3,
+        images: [
+          "r03_Jollof_1.jpg",
+          "r03_Jollof_2.jpg",
+          "r03_Jollof_3.jpg",
+          "r03_Fried_odd.jpg"
+        ],
+        explain: "Jollof rice is cooked in a tomato-pepper base, giving it a uniform red-orange color and integrated flavor. Fried rice is stir-fried with visible separate grains, vegetables, and often egg."
+      },
+      {
+        name: "Yam vs. Sweet Potato",
+        odd: 3,
+        images: [
+          "r04_Yam_1.jpg",
+          "r04_Yam_2.jpg",
+          "r04_Yam_3.jpg",
+          "r04_sweet_potato_odd.jpg"
+        ],
+        explain: "True yams are starchier with rough brown skin and pale flesh. Sweet potatoes are sweeter, often orange inside, and softer when cooked."
+      },
+      {
+        name: "Ugali vs. Grits",
+        odd: 3,
+        images: [
+          "r05_ugali_1.jpg",
+          "r05_ugali_2.jpg",
+          "r05_ugali_3.jpg",
+          "r05_grits_odd.jpg"
+        ],
+        explain: "Ugali is firm, molded maize porridge meant to be shaped and dipped. Grits are softer, spoonable, and often served creamy."
+      },
+      {
+        name: "Agege Bread vs White Bread",
+        odd: 3,
+        images: [
+          "r06_agege_1.jpg",
+          "r06_agege_2.jpg",
+          "r06_agege_3.jpg",
+          "r06_white_bread_odd.jpg"
+        ],
+        explain: "Agege bread is soft, stretchy, and slightly sweet with a distinct yellow hue. Standard white sandwich bread is lighter, drier, and evenly sliced."
+      },
+      {
+        name: "Kisra vs Tortilla",
+        odd: 3,
+        images: [
+          "r07_kisra_1.jpg",
+          "r07_kisra_2.jpg",
+          "r07_kisra_3.jpg",
+          "r07_tortilla_odd.jpg"
+        ],
+        explain: "Kisra is a thin fermented sorghum flatbread with a porous texture. Tortillas are typically wheat or corn-based and not fermented in the same way."
+      },
+      {
+        name: "Banku vs Couscous",
+        odd: 3,
+        images: [
+          "r08_banku_1.jpg",
+          "r08_banku_2.jpg",
+          "r08_banku_3.jpg",
+          "r08_couscous_odd.jpg"
+        ],
+        explain: "Banku is a fermented corn and cassava dough formed into smooth balls. Couscous consists of tiny steamed semolina grains."
+      },
+      {
+        name: "Kenkey vs Tamales",
+        odd: 3,
+        images: [
+          "r09_kenkey_1.jpg",
+          "r09_kenkey_2.jpg",
+          "r09_kenkey_3.jpg",
+          "r09_tamale_odd.jpg"
+        ],
+        explain: "Kenkey is fermented maize dough wrapped in husks and boiled. Tamales are masa-based, often filled, and steamed in husks."
+      },
+      {
+        name: "Lablab vs Lima Beans",
+        odd: 3,
+        images: [
+          "r10_lablab_1.jpg",
+          "r10_lablab_2.jpg",
+          "r10_lablab_3.jpg",
+          "r10_lima_bean_odd.jpg"
+        ],
+        explain: "Lablab beans (hyacinth beans) are typically smaller and darker with varied shapes. Lima beans are flatter, lighter in color, and more uniform."
+      },
+      {
+        name: "Bambara Groundnut vs Peanut",
+        odd: 3,
+        images: [
+          "r11_bambara_1.jpg",
+          "r11_bambara_2.jpg",
+          "r11_bambara_3.jpg",
+          "r11_peanut_odd.jpg"
+        ],
+        explain: "Bambara groundnuts grow underground like peanuts but are rounder and thicker. Peanuts are elongated and typically found in two-lobed shells."
+      },
+      {
+        name: "Cowpea Varieties (Dried)",
+        odd: 3,
+        images: [
+          "dried_blackeye.jpg",
+          "dried_pinkeye.jpg",
+          "dried_cream.jpg",
+          "dried_crowder.jpg"
+        ],
+        explain: "Crowder cowpeas are the odd one out — they grow so tightly packed in the pod that the seeds become squared-off or blocky. Blackeye, pinkeye and cream types remain more rounded or kidney-shaped even when dry."
+      }
+    ];
+
     // ==================== STATE ====================
     let currentRound = 0;
     let score = 0;
@@ -361,6 +363,10 @@ const rounds = [
     // Tick sound (optional)
     let tickOn = false;
     let audioCtx = null;
+
+    // Store shuffled positions for each round
+    let shuffledIndices = [];
+    let correctDisplayIndex = 0;
 
     // ==================== DOM ====================
     const boardEl = document.getElementById('board');
@@ -384,7 +390,7 @@ const rounds = [
 
     // ==================== ASSETS ====================
     function imgUrl(fileName){
-      return new URL(`images/${fileName}`, document.baseURI).href;
+      return `images/${fileName}`;
     }
 
     function makeMissingSvg(text){
@@ -477,33 +483,15 @@ const rounds = [
 
     function onTimeUp(){
       const round = rounds[currentRound];
-      highlightCorrect(round.odd);
+      highlightCorrect(correctDisplayIndex);
       solved = true;
-      setFeedback(`<strong>Time’s up!</strong> The odd one out was highlighted.<br/>${round.explain}`);
+      setFeedback(`<strong>Time's up!</strong> The odd one out was highlighted.<br/>${round.explain}`);
       nextBtn.style.display = 'inline';
     }
-// Shuffle the images order randomly
-const shuffledIndices = [0,1,2,3].sort(() => Math.random() - 0.5);
-let correctDisplayIndex = -1;
 
-// Then in your tile-creation loop, change to:
-for (let pos = 0; pos < 4; pos++) {
-  const originalIdx = shuffledIndices[pos];
-  const fileName = round.images[originalIdx];
-
-  // ... create tile and img as before ...
-  img.src = imgUrl(fileName);
-
-  if (originalIdx === round.odd) {
-    correctDisplayIndex = pos;
-  }
-}
-
-// Store for checking / highlighting
-round._currentCorrectPos = correctDisplayIndex;  // temp per play
     // ==================== ROUND ====================
     function clearSelections(){
-      boardEl.querySelectorAll('.tile').forEach(t => t.classList.remove('selected','wrong'));
+      boardEl.querySelectorAll('.tile').forEach(t => t.classList.remove('selected','wrong', 'correct-reveal'));
     }
 
     function highlightCorrect(correctIdx){
@@ -548,23 +536,33 @@ round._currentCorrectPos = correctDisplayIndex;  // temp per play
 
       loadingEl.textContent = failed ? `Some images failed to load (${failed}).` : '';
 
-      // render tiles (images visible immediately)
-      for(let i=0;i<4;i++){
+      // Shuffle the display order
+      shuffledIndices = [0, 1, 2, 3].sort(() => Math.random() - 0.5);
+      correctDisplayIndex = -1;
+
+      // render tiles in shuffled order
+      for(let pos = 0; pos < 4; pos++){
+        const originalIdx = shuffledIndices[pos];
+        const fileName = round.images[originalIdx];
+        
         const tile = document.createElement('div');
         tile.className = 'tile';
-        tile.dataset.index = String(i);
+        tile.dataset.index = String(pos);
         tile.tabIndex = 0;
         tile.setAttribute('role','button');
-        tile.setAttribute('aria-label', `Tile ${i + 1}`);
+        tile.setAttribute('aria-label', `Tile ${pos + 1}`);
 
         const img = document.createElement('img');
-        const fileName = round.images[i];
         img.src = imgUrl(fileName);
         img.alt = round.name;
         img.onerror = () => { img.src = makeMissingSvg(`images/${fileName}`); };
 
         tile.appendChild(img);
         boardEl.appendChild(tile);
+
+        if (originalIdx === round.odd) {
+          correctDisplayIndex = pos;
+        }
       }
 
       // start timer AFTER images are placed
@@ -579,7 +577,7 @@ round._currentCorrectPos = correctDisplayIndex;  // temp per play
       const idx = Number(tileEl.dataset.index);
       const round = rounds[currentRound];
 
-      const isCorrect = idx === round.odd;
+      const isCorrect = idx === correctDisplayIndex;
       markSelection(tileEl, isCorrect);
 
       if(isCorrect){
