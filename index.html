@@ -482,7 +482,25 @@ const rounds = [
       setFeedback(`<strong>Time’s up!</strong> The odd one out was highlighted.<br/>${round.explain}`);
       nextBtn.style.display = 'inline';
     }
+// Shuffle the images order randomly
+const shuffledIndices = [0,1,2,3].sort(() => Math.random() - 0.5);
+let correctDisplayIndex = -1;
 
+// Then in your tile-creation loop, change to:
+for (let pos = 0; pos < 4; pos++) {
+  const originalIdx = shuffledIndices[pos];
+  const fileName = round.images[originalIdx];
+
+  // ... create tile and img as before ...
+  img.src = imgUrl(fileName);
+
+  if (originalIdx === round.odd) {
+    correctDisplayIndex = pos;
+  }
+}
+
+// Store for checking / highlighting
+round._currentCorrectPos = correctDisplayIndex;  // temp per play
     // ==================== ROUND ====================
     function clearSelections(){
       boardEl.querySelectorAll('.tile').forEach(t => t.classList.remove('selected','wrong'));
