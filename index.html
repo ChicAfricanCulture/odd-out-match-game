@@ -169,6 +169,49 @@
       text-align:center;
     }
 
+    .proverb-container {
+      max-width: 720px;
+      margin: 30px auto 10px;
+      transition: opacity 0.5s ease;
+    }
+    .proverb-box {
+      background: linear-gradient(135deg, rgba(249,168,38,0.1), rgba(26,42,58,0.9));
+      border-left: 4px solid var(--accent);
+      border-radius: 12px;
+      padding: 18px 22px;
+      text-align: left;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+      backdrop-filter: blur(2px);
+    }
+    .proverb-icon {
+      font-size: 2rem;
+      margin-bottom: 8px;
+      opacity: 0.8;
+    }
+    .proverb-text {
+      font-size: 1.25rem;
+      line-height: 1.5;
+      color: var(--accent);
+      font-style: italic;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+    .proverb-attribution {
+      font-size: 0.9rem;
+      color: var(--muted);
+      text-align: right;
+      border-top: 1px dashed rgba(249,168,38,0.3);
+      padding-top: 8px;
+      margin-top: 8px;
+    }
+    .proverb-fade-in {
+      animation: proverbFadeIn 0.8s ease forwards;
+    }
+    @keyframes proverbFadeIn {
+      0% { opacity: 0; transform: translateY(10px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
     @media (max-width: 520px){
       .game-board{ grid-template-columns: repeat(2, minmax(120px, 1fr)); }
     }
@@ -215,6 +258,15 @@
     </div>
 
     <button id="next-btn" style="display:none;">Next Round</button>
+
+    <!-- Proverb section added here -->
+    <div class="proverb-container" id="proverb-container" style="opacity: 0;">
+      <div class="proverb-box">
+        <div class="proverb-icon">🌍</div>
+        <div class="proverb-text" id="proverb-text"></div>
+        <div class="proverb-attribution" id="proverb-attribution"></div>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -351,6 +403,77 @@
         explain: "Crowder cowpeas are the odd one out — they grow so tightly packed in the pod that the seeds become squared-off or blocky. Blackeye, pinkeye and cream types remain more rounded or kidney-shaped even when dry."
       }
     ];
+
+    // ==================== PROVERBS ====================
+    const foodProverbs = [
+      {
+        proverb: "Foo foo (fufu) is not chewed, it is swallowed — like wisdom, some things must be taken whole to be understood.",
+        attribution: "West African saying"
+      },
+      {
+        proverb: "One finger cannot lift a fufu ball.",
+        attribution: "Akan proverb, Ghana"
+      },
+      {
+        proverb: "The best soup is made from many ingredients.",
+        attribution: "Nigerian proverb"
+      },
+      {
+        proverb: "A man who loves ugali will never go hungry.",
+        attribution: "East African saying"
+      },
+      {
+        proverb: "The yam that stays in the ground too long becomes firewood.",
+        attribution: "Igbo proverb, Nigeria"
+      },
+      {
+        proverb: "Rice is good, but a meal without soup is incomplete.",
+        attribution: "Wolof saying, Senegal"
+      },
+      {
+        proverb: "The palm oil that colors the soup also shines on the lips.",
+        attribution: "Ghanaian proverb"
+      },
+      {
+        proverb: "Even the most beautiful bead must be strung with others.",
+        attribution: "Swahili saying"
+      },
+      {
+        proverb: "The mortar knows the weight of every pestle.",
+        attribution: "Yoruba proverb"
+      },
+      {
+        proverb: "A pot that boils over has forgotten its own size.",
+        attribution: "Ethiopian proverb"
+      },
+      {
+        proverb: "The peanut that cracks first is the one the children eat.",
+        attribution: "West African saying"
+      },
+      {
+        proverb: "Maize flour may be the same, but every hand makes different ugali.",
+        attribution: "Kenyan saying"
+      }
+    ];
+
+    function getRandomProverb() {
+      const randomIndex = Math.floor(Math.random() * foodProverbs.length);
+      return foodProverbs[randomIndex];
+    }
+
+    function displayRandomProverb() {
+      const proverbContainer = document.getElementById('proverb-container');
+      const proverbText = document.getElementById('proverb-text');
+      const proverbAttribution = document.getElementById('proverb-attribution');
+      
+      if (proverbContainer && proverbText && proverbAttribution) {
+        const proverb = getRandomProverb();
+        proverbText.textContent = `"${proverb.proverb}"`;
+        proverbAttribution.textContent = `— ${proverb.attribution}`;
+        proverbContainer.style.opacity = '1';
+        proverbContainer.classList.add('proverb-fade-in');
+      }
+    }
 
     // ==================== STATE ====================
     let currentRound = 0;
@@ -530,6 +653,9 @@
       loadingEl.textContent = 'Loading images…';
       setFeedback(`Round ${currentRound + 1}: <strong>${round.name}</strong><br/>You have ${CHOICE_SECONDS} seconds. Click the odd one out.`);
 
+      // Show a new proverb each round
+      displayRandomProverb();
+
       // preload so timer doesn't start until images are ready
       const results = await preloadRoundImages(round);
       const failed = results.filter(r => !r.ok).length;
@@ -611,7 +737,11 @@
         initRound();
       }else{
         stopTimer();
-        setFeedback(`<strong>Archive Master!</strong><br/>Final score: ${score}/${rounds.length}`);
+        const finalMessage = score === rounds.length 
+          ? `<strong>🏆 Master of the African Kitchen! 🏆</strong><br/>You've identified every odd one out with perfect eyes! From Fufu to Cowpeas, you see what makes each dish unique. These staples connect millions across Africa — same ingredients, endless creativity.`
+          : `<strong>Archive Master!</strong><br/>Final score: ${score}/${rounds.length}. Keep exploring — every meal tells a story.`;
+        
+        setFeedback(finalMessage);
         nextBtn.style.display = 'none';
       }
     }
