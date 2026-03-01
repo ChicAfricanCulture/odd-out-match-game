@@ -101,4 +101,8 @@ Open source for educational use.
 ---
 
 Created by Chic African Culture  
-Preserving culinary heritage through play.
+Preserving culinary heritage through play.    <div class="footer">
+        <p>Maintained by <a href="https://www.theafricangourmet.com" style="color: #8B4513;">The African Gourmet</a> · Licensed under CC BY 4.0</p>
+        <p>Part of [SankofaKitchen](https://github.com/ChicAfricanCulture) — African foodways retrieved through play  
+[Visit my GitHub profile](https://github.com/ChicAfricanCulture) for more projects</p>
+    </div>
