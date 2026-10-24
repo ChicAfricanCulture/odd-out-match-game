@@ -18,12 +18,8 @@ A free game from [The African Gourmet](https://www.theafricangourmet.com/), made
 - [More African food stories at The African Gourmet](https://www.theafricangourmet.com/)
 - [More games to play and learn](https://www.theafricangourmet.com/p/play-learn-african-food-games.html)
 
-## Licence
-
-Open source for educational use. See also the LICENSE file in this repo.
-
-Licensed under CC BY 4.0.
-
 ---
 
 Maintained by [The African Gourmet](https://www.theafricangourmet.com/).
+
+MIT License, see [LICENSE](LICENSE).
