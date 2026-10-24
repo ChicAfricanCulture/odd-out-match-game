@@ -1,108 +1,25 @@
-# African Foodways: Odd One Out
+# African Food: Odd One Out
 
-An educational visual literacy game exploring African food traditions.
+A looking game about African food. Each round shows four photos, and one of them doesn't belong. Spot it, then read a short note on why. You'll find fufu, jollof, yam, ugali, agege bread, cowpeas and more.
 
-🔗 Live Game: https://chicafricanculture.github.io/odd-out-match-game/
+**▶ Play it here: [https://chicafricanculture.github.io/odd-out-match-game/](https://chicafricanculture.github.io/odd-out-match-game/)**
 
----
+A free game from [The African Gourmet](https://www.theafricangourmet.com/), made to help people learn about African food through play.
 
-## About the Game
+## How to play
 
-**Spot the Odd One Out** challenges players to look closely at African dishes and identify subtle differences in texture, preparation, and presentation.
+- You have 10 seconds each round. Click the photo that doesn't belong.
+- Read the note that explains the difference, then press **Next Round**.
+- There are 12 rounds. Your score shows at the top.
+- Turn the ticking sound on or off with **Tick**, and use **Restart** to play again.
 
-Players:
-- Reveal four food images
-- Analyze visual details
-- Select the dish that does not belong
-- Learn why through short explanations
+## More from The African Gourmet
 
-This game builds:
-- Visual observation skills
-- Cultural awareness
-- Food literacy
-- Critical thinking
+- [More African food stories at The African Gourmet](https://www.theafricangourmet.com/)
+- [More games to play and learn](https://www.theafricangourmet.com/p/play-learn-african-food-games.html)
 
 ---
 
-## Why This Game Exists
+Maintained by [The African Gourmet](https://www.theafricangourmet.com/).
 
-African food is often treated as distant, unfamiliar, or exotic.
-
-This project normalizes African cuisine by presenting it as:
-
-- Rice
-- Eggs
-- Stews
-- Grains
-- Vegetables
-- Everyday meals
-
-The goal is simple:
-To show that African food is not “other” — it is foundational, diverse, and deeply human.
-
----
-
-## How It Works
-
-Each round includes:
-
-- 4 images
-- 1 visual outlier
-- A short explanation after selection
-- Progressive difficulty
-
-The differences may involve:
-- Cooking method
-- Texture
-- Ingredients
-- Regional preparation
-- Plating style
-
----
-
-## Educational Focus
-
-This game is part of the broader **African Foodways Archive**, a digital preservation project that uses interactive media to explore:
-
-- Ingredients
-- Regional dishes
-- Culinary techniques
-- Cultural meaning
-
----
-
-## Technical Details
-
-- Vanilla HTML / CSS / JavaScript
-- No frameworks
-- Fully client-side
-- Designed for GitHub Pages deployment
-- Accessible keyboard support
-
----
-
-## Status
-
-Active development.
-
-Planned features:
-- Timer mode
-- Sound toggle
-- Additional rounds
-- Difficulty scaling
-- Archive expansion
-
----
-
-## License
-
-Open source for educational use.
-
----
-
-Created by Chic African Culture  
-Preserving culinary heritage through play.    <div class="footer">
-        <p>Maintained by <a href="https://www.theafricangourmet.com" style="color: #8B4513;">The African Gourmet</a> · Licensed under CC BY 4.0</p>
-        <p>Part of [SankofaKitchen](https://github.com/ChicAfricanCulture) — African foodways retrieved through play  
-[Visit my GitHub profile](https://github.com/ChicAfricanCulture) for more projects</p>
-    </div>
+MIT License, see [LICENSE](LICENSE).
